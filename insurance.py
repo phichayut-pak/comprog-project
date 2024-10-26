@@ -17,10 +17,10 @@ import numpy as np
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense
 
-from google.colab import drive
-drive.mount('/content/drive',force_remount=True)
+# from google.colab import drive
+# drive.mount('/content/drive',force_remount=True)
 
-raw_data = pd.read_csv('/content/drive/My Drive/Colab Notebooks/Example/insurance/insurance_Project.csv')
+raw_data = pd.read_csv('insurance.csv')
 print(raw_data)
 
 raw_data.columns
