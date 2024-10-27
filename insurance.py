@@ -9,171 +9,56 @@ Original file is located at
 
 import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense
-
-# from google.colab import drive
-# drive.mount('/content/drive',force_remount=True)
-
-raw_data = pd.read_csv('insurance.csv')
-print(raw_data)
-
-raw_data.columns
-
-raw_data.loc[raw_data['bmi'].isnull()]
-
-raw_data.replace(to_replace=dict(female=0, male=1), inplace=True)
-raw_data.replace(to_replace=dict(no=0, yes=1), inplace=True)
-raw_data.replace(to_replace=dict(northwest=1, northeast=2,southeast=3,southwest=4), inplace=True)
-raw_data = raw_data.dropna()
-raw_data
-
-plt.plot(raw_data['region'],raw_data['charges'])
-
-plt.plot(raw_data['age'],raw_data['charges'])
-
-"""# ใช้ 5 ตัวแปรในการ predict Charges
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
 
 
-"""
+def train_insurance_model(age, sex, bmi, children, smoker, region, csv_path):
+    # Load and preprocess data
+    raw_data = pd.read_csv(csv_path)
+    raw_data.replace(to_replace=dict(female=0, male=1), inplace=True)
+    raw_data.replace(to_replace=dict(no=0, yes=1), inplace=True)
+    raw_data.replace(to_replace=dict(northwest=1, northeast=2, southeast=3, southwest=4), inplace=True)
+    raw_data.dropna(inplace=True)
 
-input = raw_data[['age','sex','bmi','children','smoker']]
-input
+    # Define input and output
+    input_data = raw_data[['age', 'sex', 'bmi', 'children', 'smoker', 'region']].to_numpy()
+    output_data = raw_data['charges'].to_numpy()
 
-input = input.to_numpy()
-input
+    # Split data into training and validation sets
+    X_train, X_val, y_train, y_val = train_test_split(input_data, output_data, test_size=0.2, random_state=42)
 
-output = raw_data['charges'].to_numpy()
-output
+    # Feature scaling
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_val_scaled = scaler.transform(X_val)
 
-model1 = Sequential()
-model1.add(Dense(1, input_dim=5))
-model1.add(Dense(3))
-model1.add(Dense(3))
-model1.add(Dense(3))
-model1.add(Dense(1))
+    # Define and compile the model
+    model = Sequential([
+        Dense(6, input_dim=6, activation='relu'),
+        Dense(4, activation='relu'),
+        Dense(4, activation='relu'),
+        Dense(1)
+    ])
+    model.compile(optimizer='adam', loss='mean_absolute_error')
 
-model1.compile(optimizer=tf.optimizers.Adam(learning_rate=0.05),loss='mean_absolute_error')
-history = model1.fit(input, output, epochs=100)
-plt.plot(history.history['loss'])
+    # Train the model
+    model.fit(X_train_scaled, y_train, epochs=100, validation_data=(X_val_scaled, y_val), verbose=0)
 
-predictions = model1.predict(input)
-plt.plot(output,label = 'Real',color='purple')
-plt.plot(predictions,label='Predictions',color = 'g')
-plt.legend()
-plt.title("y from data and predictions")
-fig = plt.gcf()
-fig.set_size_inches(30, 10.5)
+    # Make a prediction for the given input values
+    input_values = np.array([[age, sex, bmi, children, smoker, region]])
+    input_values_scaled = scaler.transform(input_values)
+    predicted_charge = model.predict(input_values_scaled)
 
-plt.xlabel("input")
-plt.ylabel("charges")
-plt.show()
+    return float(predicted_charge[0][0])
 
-predictions = model1.predict(input)
-plt.plot(output[:100],label = 'Real',color='purple')
-plt.plot(predictions[:100],label='Predictions',color = 'g')
-plt.legend()
-plt.title("y from data and predictions")
-fig = plt.gcf()
-fig.set_size_inches(30, 10.5)
+# Example usage
+# 28,male,33,3,no,southeast --> 4449.462
+predicted_charge = train_insurance_model(28, 1, 33, 3, 0, 3, 'insurance.csv')
 
-plt.xlabel("input")
-plt.ylabel("charges")
-plt.show()
-
-"""# ใช้ค่า BMI ในการ predict Charges
-
-
-
-"""
-
-input = raw_data['bmi'].to_numpy()
-input
-
-output = raw_data['charges'].to_numpy()
-output
-
-model2 = Sequential()
-model2.add(Dense(1, input_dim=1))
-model2.add(Dense(1))
-model2.compile(optimizer=tf.optimizers.Adam(learning_rate=0.05),loss='mean_absolute_error')
-history = model2.fit(input, output, epochs=100)
-plt.plot(history.history['loss'])
-
-predictions = model2.predict(input)
-plt.plot(output,label = 'Real',color='purple')
-plt.plot(predictions,label='Predictions',color = 'g')
-plt.legend()
-plt.title("charges from data and predictions")
-fig = plt.gcf()
-fig.set_size_inches(30, 10.5)
-
-plt.xlabel("person")
-plt.ylabel("charges")
-plt.show()
-
-predictions = model2.predict(input)
-plt.plot(output[:100],label = 'Real',color='purple')
-plt.plot(predictions[:100],label='Predictions',color = 'g')
-plt.legend()
-plt.title("first 100 data of charges from data and predictions")
-fig = plt.gcf()
-fig.set_size_inches(30, 10.5)
-
-plt.xlabel("input")
-plt.ylabel("charges")
-plt.show()
-
-"""จะเห็นว่าความแม่นยำไม่แม่นเท่าใช้ตัวแปร 5 ตัวแปร
-
-# ใช้ 6 ตัวแปรในการ predict Charges (เพิ่ม region)
-"""
-
-input = raw_data[['age','sex','bmi','children','smoker','region']].to_numpy()
-input
-
-output = raw_data['charges'].to_numpy()
-output
-
-model3 = Sequential()
-model3.add(Dense(1, input_dim=6))
-model3.add(Dense(4))
-model3.add(Dense(4))
-model3.add(Dense(1))
-
-model3.compile(optimizer=tf.optimizers.Adam(learning_rate=0.05),loss='mean_absolute_error')
-history = model3.fit(input, output, epochs=100)
-plt.plot(history.history['loss'])
-
-predictions = model3.predict(input)
-plt.plot(output,label = 'Real',color='purple')
-plt.plot(predictions,label='Predictions',color = 'g')
-plt.legend()
-plt.title("y from data and predictions")
-fig = plt.gcf()
-fig.set_size_inches(30, 10.5)
-
-plt.xlabel("input")
-plt.ylabel("charges")
-plt.show()
-
-predictions = model3.predict(input)
-plt.plot(output[:100],label = 'Real',color='purple')
-plt.plot(predictions[:100],label='Predictions',color = 'g')
-plt.legend()
-plt.title("y from data and predictions")
-fig = plt.gcf()
-fig.set_size_inches(30, 10.5)
-
-plt.xlabel("input")
-plt.ylabel("charges")
-plt.show()
-
-"""จะเห็นว่า Graph ของ 5 ตัวแปร กับ 6 ตัวแปร เหมือนกันเลย ซึ่ง
-อาจจะมาจากการที่ region ไม่ได้ส่งผลต่อ charges
-"""
+print(predicted_charge)
