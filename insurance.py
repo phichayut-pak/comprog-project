@@ -26,6 +26,41 @@ def train_insurance_model(age, sex, bmi, children, smoker, region, csv_path):
     raw_data.replace(to_replace=dict(northwest=1, northeast=2, southeast=3, southwest=4), inplace=True)
     raw_data.dropna(inplace=True)
 
+    # Define input and outputimport pandas as pd
+import numpy as np
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Dense
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+def load_and_preprocess_data(csv_path):
+    raw_data = pd.read_csv(csv_path)
+    replacements = {
+        'sex': {'female': 0, 'male': 1},
+        'smoker': {'no': 0, 'yes': 1},
+        'region': {'northwest': 1, 'northeast': 2, 'southeast': 3, 'southwest': 4}
+    }
+    for column, mapping in replacements.items():
+        raw_data.replace(to_replace={column: mapping}, inplace=True)
+    raw_data.dropna(inplace=True)
+    return raw_data
+
+def build_and_train_model(X_train, y_train, X_val, y_val):
+    model = Sequential([
+        Dense(6, input_dim=6, activation='relu'),
+        Dense(4, activation='relu'),
+        Dense(4, activation='relu'),
+        Dense(1)
+    ])
+    model.compile(optimizer='adam', loss='mean_absolute_error')
+    model.fit(X_train, y_train, epochs=100, validation_data=(X_val, y_val), verbose=0)
+    return model
+
+def train_insurance_model(age, sex, bmi, children, smoker, region, csv_path):
+    # Load and preprocess data
+    raw_data = load_and_preprocess_data(csv_path)
+
     # Define input and output
     input_data = raw_data[['age', 'sex', 'bmi', 'children', 'smoker', 'region']].to_numpy()
     output_data = raw_data['charges'].to_numpy()
@@ -38,17 +73,8 @@ def train_insurance_model(age, sex, bmi, children, smoker, region, csv_path):
     X_train_scaled = scaler.fit_transform(X_train)
     X_val_scaled = scaler.transform(X_val)
 
-    # Define and compile the model
-    model = Sequential([
-        Dense(6, input_dim=6, activation='relu'),
-        Dense(4, activation='relu'),
-        Dense(4, activation='relu'),
-        Dense(1)
-    ])
-    model.compile(optimizer='adam', loss='mean_absolute_error')
-
-    # Train the model
-    model.fit(X_train_scaled, y_train, epochs=100, validation_data=(X_val_scaled, y_val), verbose=0)
+    # Build and train the model
+    model = build_and_train_model(X_train_scaled, y_train, X_val_scaled, y_val)
 
     # Make a prediction for the given input values
     input_values = np.array([[age, sex, bmi, children, smoker, region]])
