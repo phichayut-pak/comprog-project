@@ -56,9 +56,3 @@ def train_insurance_model(age, sex, bmi, children, smoker, region, csv_path):
     predicted_charge = model.predict(input_values_scaled)
 
     return float(predicted_charge[0][0])
-
-# Example usage
-# 28,male,33,3,no,southeast --> 4449.462
-predicted_charge = train_insurance_model(28, 1, 33, 3, 0, 3, 'insurance.csv')
-
-print(predicted_charge)
