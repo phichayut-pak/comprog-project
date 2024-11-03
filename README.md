@@ -38,3 +38,7 @@ Make sure you have the following installed:
 ### Running the App
 
 To run the Streamlit app, use the following command:
+```bash
+python -m streamlit run main.py
+```
+
