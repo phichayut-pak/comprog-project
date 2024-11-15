@@ -12,21 +12,21 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 
-"""
-Train an insurance model based on the provided parameters and dataset.
 
-Parameters:
-age (int): Age of the individual.
-sex (str): Sex of the individual ('male' or 'female').
-bmi (float): Body Mass Index of the individual.
-children (int): Number of children the individual has.
-smoker (str): Smoking status of the individual ('yes' or 'no').
-region (str): Region where the individual lives ('northwest', 'northeast', 'southeast', 'southwest').
-csv_path (str): Path to the CSV file containing the insurance dataset.
+#Train an insurance model based on the provided parameters and dataset.
 
-Returns:
-None
-"""
+#Parameters:
+#age (int): Age of the individual.
+#sex (str): Sex of the individual ('male' or 'female').
+#bmi (float): Body Mass Index of the individual.
+#children (int): Number of children the individual has.
+#smoker (str): Smoking status of the individual ('yes' or 'no').
+#region (str): Region where the individual lives ('northwest', 'northeast', 'southeast', 'southwest').
+#csv_path (str): Path to the CSV file containing the insurance dataset.
+
+#Returns:
+#None
+
 def train_insurance_model(age, sex, bmi, children, smoker, region, csv_path):
     # Load and preprocess data
     raw_data = pd.read_csv(csv_path)
@@ -37,18 +37,18 @@ def train_insurance_model(age, sex, bmi, children, smoker, region, csv_path):
 
 
 
-"""
-Load and preprocess data from a CSV file.
 
-This function reads data from the specified CSV file, encodes categorical variables into numerical values,
-and removes any rows with missing values.
+#Load and preprocess data from a CSV file.
 
-Parameters:
-csv_path (str): The file path to the CSV file containing the data.
+#This function reads data from the specified CSV file, encodes categorical variables into numerical values,
+#and removes any rows with missing values.
 
-Returns:
-pandas.DataFrame: A DataFrame containing the preprocessed data.
-"""
+#Parameters:
+#csv_path (str): The file path to the CSV file containing the data.
+
+#Returns:
+#pandas.DataFrame: A DataFrame containing the preprocessed data.
+
 def load_and_preprocess_data(csv_path):
     raw_data = pd.read_csv(csv_path)
     replacements = {
@@ -61,18 +61,18 @@ def load_and_preprocess_data(csv_path):
     raw_data.dropna(inplace=True)
     return raw_data
 
-"""
-Builds and trains a neural network model.
 
-Parameters:
-X_train (numpy.ndarray): Training data features.
-y_train (numpy.ndarray): Training data labels.
-X_val (numpy.ndarray): Validation data features.
-y_val (numpy.ndarray): Validation data labels.
+#Builds and trains a neural network model.
 
-Returns:
-keras.Sequential: Trained neural network model.
-"""
+#Parameters:
+#X_train (numpy.ndarray): Training data features.
+#y_train (numpy.ndarray): Training data labels.
+#X_val (numpy.ndarray): Validation data features.
+#y_val (numpy.ndarray): Validation data labels.
+
+#Returns:
+#keras.Sequential: Trained neural network model.
+
 def build_and_train_model(X_train, y_train, X_val, y_val):
     model = Sequential([
         Dense(6, input_dim=6, activation='relu'),
@@ -84,19 +84,19 @@ def build_and_train_model(X_train, y_train, X_val, y_val):
     model.fit(X_train, y_train, epochs=100, validation_data=(X_val, y_val), verbose=0)
     return model
 
-"""
-Trains an insurance model using the provided dataset and predicts the insurance charge for given input values.
-Parameters:
-age (int): Age of the individual.
-sex (int): Sex of the individual (0 for female, 1 for male).
-bmi (float): Body Mass Index of the individual.
-children (int): Number of children/dependents covered by insurance.
-smoker (int): Smoking status of the individual (0 for non-smoker, 1 for smoker).
-region (int): Region where the individual resides (encoded as an integer).
-csv_path (str): Path to the CSV file containing the insurance dataset.
-Returns:
-float: Predicted insurance charge for the given input values.
-"""
+
+#Trains an insurance model using the provided dataset and predicts the insurance charge for given input values.
+#Parameters:
+#age (int): Age of the individual.
+#sex (int): Sex of the individual (0 for female, 1 for male).
+#bmi (float): Body Mass Index of the individual.
+#children (int): Number of children/dependents covered by insurance.
+#smoker (int): Smoking status of the individual (0 for non-smoker, 1 for smoker).
+#region (int): Region where the individual resides (encoded as an integer).
+#csv_path (str): Path to the CSV file containing the insurance dataset.
+#Returns:
+#float: Predicted insurance charge for the given input values.
+
 def train_insurance_model(age, sex, bmi, children, smoker, region, csv_path):
     # Load and preprocess data
     raw_data = load_and_preprocess_data(csv_path)
