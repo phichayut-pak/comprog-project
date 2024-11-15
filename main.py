@@ -3,8 +3,23 @@
 import streamlit as st
 from insurance import train_insurance_model
 
+
+"""
+Function to get user inputs from the Streamlit interface.
+This function displays input fields for the user to enter their age, sex, BMI, number of children, 
+smoking status, and region. It then maps the categorical inputs to integer values and returns 
+all the inputs as a tuple.
+Returns:
+    tuple: A tuple containing the following user inputs:
+        - age (int): The age of the user.
+        - sex (int): The sex of the user (1 for male, 0 for female).
+        - bmi (float): The Body Mass Index (BMI) of the user.
+        - children (int): The number of children the user has.
+        - smoker (int): The smoking status of the user (1 for yes, 0 for no).
+        - region (int): The region of the user (mapped to an integer value).
+"""
+
 def get_user_inputs():
-    """Function to get user inputs from the Streamlit interface."""
     st.header("User Input Parameters")
 
     # Input fields in the center column
@@ -23,8 +38,21 @@ def get_user_inputs():
 
     return age, sex, bmi, children, smoker, region
 
+
+
+
+"""
+Main function to run the Streamlit app.
+This function sets up the Streamlit interface for predicting US insurance charges.
+It displays the title and description, collects user inputs, and predicts insurance charges
+based on the inputs when the "Predict" button is clicked.
+The layout is centered using columns, and the user inputs are collected through the
+`get_user_inputs` function. The prediction is made using the `train_insurance_model` function
+with the provided dataset path.
+Returns:
+    None
+"""
 def main():
-    """Main function to run the Streamlit app."""
     st.title("US Insurance Charges Prediction")
     st.write("Predict insurance charges based on user inputs.")
 
