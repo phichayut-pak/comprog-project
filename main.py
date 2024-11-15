@@ -25,7 +25,7 @@ def get_user_inputs():
 
 def main():
     """Main function to run the Streamlit app."""
-    st.title("Insurance Charges Prediction")
+    st.title("US Insurance Charges Prediction")
     st.write("Predict insurance charges based on user inputs.")
 
     # Centered layout using columns
