@@ -8,6 +8,7 @@ This project is a Streamlit web application that predicts insurance charges base
 - `insurance.py`: Contains the function to train the insurance model and make predictions.
 - `insurance.csv`: The dataset used to train the model.
 - `README.md`: This file, providing an overview of the project.
+- `requirements.txt`: The required libraries to install before executing the project.
 
 ## 🚀 Getting Started
 
